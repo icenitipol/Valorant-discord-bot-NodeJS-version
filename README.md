@@ -1,8 +1,7 @@
 # Valorant store checker - Discord Bot
-Discord bot that shows valorant your daily store by using the Ingame API.
-written using Python and the [Pycord](https://github.com/Pycord-Development/pycord) library <br>
-
-Tutorial : [Youtube](https://youtu.be/gYjzEuJh3Ms)
+Discord bot that shows your daily Valorant store by using the ingame API.
+written using NodeJS<br>
+Based on original python version by [staciax](https://github.com/staciax/Valorant-store-checker-discord-bot)
 
 ## Screenshot
 
@@ -18,11 +17,10 @@ Tutorial : [Youtube](https://youtu.be/gYjzEuJh3Ms)
 ## Prerequisites
 
 * [NodeJS 14+](https://nodejs.org/en/)
-* [Git](https://git-scm.com/download)
 
 ## Installations
 
-* Install requirements
+* Install dependencies
 ```
 npm install
 ```
