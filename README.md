@@ -7,9 +7,7 @@ Tutorial : [Youtube](https://youtu.be/gYjzEuJh3Ms)
 ## Screenshot
 
 ![image](https://i.imgur.com/gj5usTI.gif)
-![image](https://i.imgur.com/RLMarRk.png)
-<br>
-`* bug display price skin 2,3 (fixed)`
+![image](https://i.imgur.com/gkAKFZW.png)
 
 ## Usage
 
@@ -19,24 +17,23 @@ Tutorial : [Youtube](https://youtu.be/gYjzEuJh3Ms)
 
 ## Prerequisites
 
-* [Python 3.6+](https://www.python.org/downloads/)
+* [NodeJS 14+](https://nodejs.org/en/)
 * [Git](https://git-scm.com/download)
 
 ## Installations
 
 * Install requirements
 ```
-pip install -r requirements.txt
+npm install
 ```
-* Store discord bot token in .env and server id for slash command (if private server)
-```
-TOKEN=<bot token>
-SERVER_ID= <your_server_id>
-CHANNEL_LOOP = <channel_id> (if you want to loop)
+* Edit token, clientid at index.ts file
 ```
 * Run the bot
 ```
-python bot.py
+npm run build
+
+-using nodemon -> nodemon index.js
+-using pm2 -> pm2 start index.js --name valorantbot
 ```
 
 ## Special thanks
