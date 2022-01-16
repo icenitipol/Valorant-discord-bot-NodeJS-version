@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { createCanvas, loadImage, registerFont } from 'canvas'
 import { MessageAttachment, MessageEmbed } from 'discord.js'
-// import { makeCookieFromArray } from './util'
-registerFont('./ValorantFont.ttf', { family: 'modern sans' })
+registerFont('../assets/ValorantFont.ttf', { family: 'modern sans' })
 
 type authType = {
     headers: {
@@ -148,12 +147,8 @@ export const getOfferImage = (offers: skins[]): Promise<Buffer> => {
             const skin2 = await loadImage(offers[1].icon)
             const skin3 = await loadImage(offers[2].icon)
             const skin4 = await loadImage(offers[3].icon)
-            // console.log(skin1.height, skin1.width)
-            // console.log(skin2.height, skin2.width)
-            // console.log(skin3.height, skin3.width)
-            // console.log(skin4.height, skin4.width)
 
-            const bg = await loadImage('./background.png')
+            const bg = await loadImage('../assets/background.png')
 
             const width = bg.width
             const height = bg.height
@@ -177,11 +172,6 @@ export const getOfferImage = (offers: skins[]): Promise<Buffer> => {
             const skin2_resize = getSizeKeepAspectRatio(skin2.width, skin2.height, 500, 120)
             const skin3_resize = getSizeKeepAspectRatio(skin3.width, skin3.height, 500, 120)
             const skin4_resize = getSizeKeepAspectRatio(skin4.width, skin4.height, 500, 120)
-
-            // context.drawImage(skin1, 25, 60, 420, 120)
-            // context.drawImage(skin2, 625, 60, 420, 120)
-            // context.drawImage(skin3, 25, 310, 420, 120)
-            // context.drawImage(skin4, 625, 310, 420, 120)
 
             context.drawImage(skin1, 25, 60, skin1_resize.width, skin1_resize.height)
             context.drawImage(skin2, 625, 60, skin2_resize.width, skin2_resize.height)
