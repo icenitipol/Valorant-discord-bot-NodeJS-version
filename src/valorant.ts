@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { createCanvas, loadImage, registerFont  } from 'canvas'
+import { createCanvas, loadImage, registerFont } from 'canvas'
+import { MessageAttachment, MessageEmbed } from 'discord.js'
 // import { makeCookieFromArray } from './util'
 registerFont('./ValorantFont.ttf', { family: 'modern sans' })
 
@@ -15,7 +16,7 @@ type offerV1 = {
     "OfferID": string,
     "IsDirectPurchase": boolean,
     "StartDate": string,
-    "Cost": { [key:string]: number },
+    "Cost": { [key: string]: number },
     "Rewards": [
         {
             "ItemTypeID": string,
@@ -25,11 +26,11 @@ type offerV1 = {
     ]
 }
 
-type skins = {name: string, icon:string, price: number}
+type skins = { name: string, icon: string, price: number }
 
 const makeCookieFromArray = (cookies: string[]) => {
     let data = ""
-    cookies.forEach(e=>{
+    cookies.forEach(e => {
         data = data.concat(`${e};`)
     })
     return data
@@ -61,11 +62,11 @@ export const auth = (username: string, password: string): Promise<authType> => {
                 const data = axiosresult.data.response?.parameters?.uri as string ?? ""
                 const access_token_regex = /access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)/g;
                 const foundData = [...data.matchAll(access_token_regex)][0]
-                if(!foundData) return null
+                if (!foundData) return null
                 return foundData[1]
             })
 
-            if(!riotauth_token) { return reject("user/pass api error") }
+            if (!riotauth_token) { return reject("user/pass api error") }
 
             /*
                 GET RIOT ENTITLEMENT ACCESS TOKEN
@@ -113,18 +114,18 @@ export const getOffer = (riotAuthData: authType): Promise<skins[]> => {
             }).then(axiosresult => axiosresult.data.Offers ?? [])
 
 
-            for(let offer of offers) {
+            for (let offer of offers) {
                 await axios.get(`https://valorant-api.com/v1/weapons/skinlevels/${offer}`).then(axiosresult => {
-                    for(let offer_price of offers_prices)
-                    if(offer_price.OfferID == offer){
-                        const varorantSkinData = axiosresult.data.data
-                        skins.push({
-                            icon: varorantSkinData.displayIcon as string ?? "",
-                            name: varorantSkinData.displayName as string ?? "",
-                            price: offer_price.Cost[Object.keys(offer_price.Cost)[0]]
-                        })
-                        // console.log({offer, varorantSkinData, skins})
-                    }
+                    for (let offer_price of offers_prices)
+                        if (offer_price.OfferID == offer) {
+                            const varorantSkinData = axiosresult.data.data
+                            skins.push({
+                                icon: varorantSkinData.displayIcon as string ?? "",
+                                name: varorantSkinData.displayName as string ?? "",
+                                price: offer_price.Cost[Object.keys(offer_price.Cost)[0]]
+                            })
+                            // console.log({offer, varorantSkinData, skins})
+                        }
                 })
             }
 
@@ -156,13 +157,13 @@ export const getOfferImage = (offers: skins[]): Promise<Buffer> => {
 
             const width = bg.width
             const height = bg.height
-    
+
             const canvas = createCanvas(width, height)
             const context = canvas.getContext('2d')
-    
+
             const getSizeKeepAspectRatio = (width: number, height: number, limw: number, limh: number) => {
-                let ratiow = width > limw ? limw/width : 1
-                let ratioh = height > limh ? limh/height : 1
+                let ratiow = width > limw ? limw / width : 1
+                let ratioh = height > limh ? limh / height : 1
                 let minratio = Math.min(ratiow, ratioh)
                 return {
                     width: Math.round(width * minratio),
@@ -182,10 +183,10 @@ export const getOfferImage = (offers: skins[]): Promise<Buffer> => {
             // context.drawImage(skin3, 25, 310, 420, 120)
             // context.drawImage(skin4, 625, 310, 420, 120)
 
-            context.drawImage(skin1, 25, 60,    skin1_resize.width, skin1_resize.height)
-            context.drawImage(skin2, 625, 60,   skin2_resize.width, skin2_resize.height)
-            context.drawImage(skin3, 25, 310,   skin3_resize.width, skin3_resize.height)
-            context.drawImage(skin4, 625, 310,  skin4_resize.width, skin4_resize.height)
+            context.drawImage(skin1, 25, 60, skin1_resize.width, skin1_resize.height)
+            context.drawImage(skin2, 625, 60, skin2_resize.width, skin2_resize.height)
+            context.drawImage(skin3, 25, 310, skin3_resize.width, skin3_resize.height)
+            context.drawImage(skin4, 625, 310, skin4_resize.width, skin4_resize.height)
 
             context.textBaseline = "hanging";
 
@@ -204,9 +205,33 @@ export const getOfferImage = (offers: skins[]): Promise<Buffer> => {
             const buffer = canvas.toBuffer('image/png')
             return resolve(buffer)
         }
-        catch(error){
+        catch (error) {
             console.log("DOWNLOAD SKIN IMAGE ERROR", error)
             return reject(false)
         }
-    })   
+    })
+}
+
+export const getOfferMessage = (username: string, password: string, user: string, user_pic_url: string = 'https://i.imgur.com/AfFp7pu.png'): Promise<{ embeds: MessageEmbed[], files: MessageAttachment[] }> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const riotAuthData = await auth(username, password).catch(err => { throw new Error("auth:" + err) })
+            const offers = await getOffer(riotAuthData).catch(err => { throw new Error("offers:" + err) })
+            const offerImage = await getOfferImage(offers).catch(err => { throw new Error("img:" + err) })
+
+            const file = new MessageAttachment(offerImage, "valorant_store.png");
+            const exampleEmbed = new MessageEmbed()
+                .setColor('#fe676e')
+                .setTitle('VALORANT STORE')
+                .setImage('attachment://valorant_store.png')
+                .setTimestamp()
+                .setFooter({ text: `Requested By [${user}, ACC:${username}]`, iconURL: user_pic_url });
+
+            return resolve({ embeds: [exampleEmbed], files: [file] })
+        }
+        catch (error) {
+            console.log("ERROR", error)
+            return reject(false)
+        }
+    })
 }
