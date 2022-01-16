@@ -34,15 +34,10 @@ Based on original Python version by [staciax](https://github.com/staciax/Valoran
 ## Usage
 
 | Command | Parameter | Action |
-
 | :------------------- | :--------------------------- | :--------------------------- |
-
 | `/store` | `username`, `password` | Shows my daily store (Based on staciax version) |
-
 | `/valoloop` | `username`, `password` | Shows my daily store, also add the user to looping list |
-
 | `/valolist` | | Shows users in the looping list |
-
 | `/valoshop` | `username` | Shows my daily store, only username required, work only if user already use /valoloop function |
 
   
